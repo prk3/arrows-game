@@ -50,6 +50,7 @@ $(document).ready( function() {
 
 		$('.arrow').css('width', (100/arraySize) + '%');
 
+		generatePattern();
 		update();
 	};
 
@@ -133,6 +134,75 @@ $(document).ready( function() {
 		}
 	}
 
+	var generatePattern = function() {
+
+		$('#pattern').empty();
+
+		var arrowTypes = {
+			L : $('<div>', {class: "<", text: '<'}),
+			R : $('<div>', {class: ">", text: '>'})
+		};
+
+		var arrowMoves = {
+			M : $('<div>', {class: "m", text: 'm'}),
+			J : $('<div>', {class: "j", text: 'j'})
+		};
+
+		var swapArrowType = function() {
+			currentArrowType == "L" ? currentArrowType = "R" : currentArrowType = "L";
+		};
+
+		var currentArrowMove = "M";
+		var currentArrowType = "L";
+
+		for (var iteration = 0, repetition = 0; repetition < arrowsNumber;) {
+
+			if (iteration == 0) {
+				currentArrowMove = "M";
+			} else {
+				currentArrowMove = "J";
+			}
+
+			if (iteration == 1) {
+				swapArrowType();
+			}
+
+			$('<div>', {class: 'step'})
+				.append( arrowMoves[currentArrowMove].clone() )
+				.append( arrowTypes[currentArrowType].clone() )
+				.appendTo( $('#pattern') );
+
+			if (iteration > repetition) {
+				iteration = 0;
+				repetition++;
+			} else {
+				iteration++;
+			}
+		}
+
+		for (var iteration = 0, repetition = 0; repetition < arrowsNumber;) {
+
+			if (iteration == 0) {
+				currentArrowMove = "M";
+				swapArrowType();
+			} else {
+				currentArrowMove = "J";
+			}
+
+			$('<div>', {class: 'step'})
+				.append( arrowMoves[currentArrowMove].clone() )
+				.append( arrowTypes[currentArrowType].clone() )
+				.appendTo( $('#pattern') );
+
+			if (iteration > arrowsNumber - repetition - 2) {
+				iteration = 0;
+				repetition++;
+			} else {
+				iteration++;
+			}
+		}
+	}
+
 
 	$('#arrows-number').change( function() {
 		initialize( parseInt( $(this).val() ) );
@@ -144,7 +214,15 @@ $(document).ready( function() {
 
 	$('#undo').click( undo );
 
+	$('#show-pattern').click(function() {
+		$('#pattern').toggleClass('visible');
+	});
+
 	initialize( parseInt( $('#arrows-number').val() ) );
+
+
+
+
 
 
 });
